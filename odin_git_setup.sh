@@ -2,9 +2,9 @@
 
 # Add git repo and install latest version
 echo "***Installing git***"
-sudo add-apt-repository ppa:git-core/ppa
+sudo add-apt-repository --yes ppa:git-core/ppa
 sudo apt update
-sudo apt install git
+sudo apt install git -y
 
 # Set up git with my name, email, and options suggested by TOP
 echo "***Setting up Git for The Odin Project***"
@@ -28,6 +28,4 @@ git config --get user.email
 git --version
 
 
-# To Do:
-# PPA no interaction
-# Install no interaction -y
+
