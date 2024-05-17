@@ -15,8 +15,8 @@ git config --global color.ui auto
 git config --global pull.rebase false
 
 # Setup SSH Key, if needed
-if [! -f ~/.ssh/id_ed25519.pub ]; then
-  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N"" -C "dpeters08@gmail.com" -q
+if [ ! -f ~/.ssh/id_ed25519.pub ]; then
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -C "dpeters08@gmail.com" -q
   echo "***Generated SSH keys. Public key:***"
   cat ~/.ssh/id_ed25519.pub
 fi
@@ -26,3 +26,8 @@ echo "***Here is the git name, email, and version***"
 git config --get user.name
 git config --get user.email
 git --version
+
+
+# To Do:
+# PPA no interaction
+# Install no interaction -y
