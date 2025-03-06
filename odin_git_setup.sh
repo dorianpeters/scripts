@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Add git repo and install latest version
-echo "***Installing git***"
+echo "***Installing git and curl, nvm, and node***"
 sudo add-apt-repository --yes ppa:git-core/ppa
 sudo apt update
-sudo apt install git -y
+sudo apt install git curl -y
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+nvm install --lts
 
 # Set up git with my name, email, and options suggested by TOP
 echo "***Setting up Git for The Odin Project***"
@@ -22,10 +24,11 @@ if [ ! -f ~/.ssh/id_ed25519.pub ]; then
 fi
 
 # Output name and email to make sure it's correct
-echo "***Here is the git name, email, and version***"
+echo "***Here is the git name, email, and version, and node version ***"
 git config --get user.name
 git config --get user.email
 git --version
+node --version
 
 
 
