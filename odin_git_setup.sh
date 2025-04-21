@@ -5,7 +5,6 @@ echo "***Installing git, curl, and nvm***"
 sudo add-apt-repository --yes ppa:git-core/ppa
 sudo apt update
 sudo apt install git curl -y
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # Set up git with my name, email, and options suggested by TOP
 echo "***Setting up Git for The Odin Project***"
@@ -27,4 +26,10 @@ echo "***Here is the git name, email, and version ***"
 git config --get user.name
 git config --get user.email
 git --version
-echo "***Install node by restarting the terminal and running: nvm install --lts  ***"
+echo "***Install nvm and node  ***"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install --lts
+echo "*** Here is the Node version ***"
+node --version
+echo "*** Script done ***"
