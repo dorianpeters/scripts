@@ -70,6 +70,7 @@ fi
 echo 'export FNM_COREPACK_ENABLED=1' >> ~/.bashrc
 echo 'alias pn=pnpm' >> ~/.bashrc
 
+# Install nodejs lts version
 fnm install --lts --corepack-enabled
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install Node.js LTS with fnm."
