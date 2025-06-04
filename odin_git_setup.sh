@@ -19,9 +19,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Set up git with my name, email, and options suggested by TOP
+# Set up git with my name, email, and options
 echo "---"
-echo "*** Setting up Git for The Odin Project ***"
+echo "*** Setting up Git ***"
 echo "---"
 
 git config --global user.name "Dorian Peters"
