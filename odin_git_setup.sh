@@ -11,7 +11,6 @@ echo "---"
 echo "---"
 echo "*** Installing git and curl ***"
 echo "---"
-sudo add-apt-repository --yes ppa:git-core/ppa
 sudo apt update
 sudo apt install git curl -y
 if [ $? -ne 0 ]; then
