@@ -9,10 +9,10 @@ echo "---"
 
 # Add git repo and install latest version
 echo "---"
-echo "*** Installing git and curl ***"
+echo "*** Installing git, curl, and unzip ***"
 echo "---"
 sudo apt update
-sudo apt install git curl -y
+sudo apt install git curl unzip -y
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install git and curl. Please check your internet connection or repository access."
     exit 1
