@@ -65,6 +65,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Make fnm available in this session
+export PATH="$HOME/.fnm:$PATH"
+eval "$(fnm env)"
+
 # Install nodejs lts version
 fnm install --lts --corepack-enabled
 
