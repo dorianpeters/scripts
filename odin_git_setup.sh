@@ -65,9 +65,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Enable corepack/pnpm for all node installs and add pnpm alias to .bashrc file
-echo 'alias pn=pnpm' >> ~/.bashrc
-
 # Install nodejs lts version
 fnm install --lts --corepack-enabled
 
@@ -75,6 +72,10 @@ if [ $? -ne 0 ]; then
     echo "Error: Failed to install Node.js LTS with fnm."
     exit 1
 fi
+
+# Enable pnpm
+corepack enable pnpm
+echo 'alias pn=pnpm' >> ~/.bashrc
 
 echo "---"
 echo "*** Verification of Node and pnpm installation ***"
