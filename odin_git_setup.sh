@@ -65,9 +65,21 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Make fnm available in this session
-export PATH="$HOME/.fnm:$PATH"
-eval "$(fnm env)"
+# Make fnm available in this session (installer uses ~/.local/share/fnm)
+FNM_PATH="$HOME/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+    export PATH="$FNM_PATH:$PATH"
+    eval "$(fnm env)"
+else
+    echo "Error: fnm directory not found at $FNM_PATH. Install may have failed."
+    exit 1
+fi
+
+# Check if fnm is available, otherwise print error
+if ! command -v fnm >/dev/null 2>&1; then
+    echo "Error: fnm is not available in PATH after install."
+    exit 1
+fi
 
 # Install nodejs lts version
 fnm install --lts --corepack-enabled
