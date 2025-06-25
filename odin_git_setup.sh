@@ -101,8 +101,3 @@ echo "pnpm Version: $(pnpm -v)"
 
 echo "---"
 echo "*** Script finished! ***"
-echo "---"
-echo "Note: For 'fnm' and 'pnpm' to be fully available in your terminal, please either:"
-echo "1. Open a new terminal session."
-echo "2. Run 'source ~/.bashrc' in your current terminal."
-echo "---"
