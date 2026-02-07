@@ -39,22 +39,9 @@ if [ ! -f ~/.ssh/id_ed25519.pub ]; then
     mkdir -p ~/.ssh
     chmod 700 ~/.ssh
     ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -C "dpeters08@gmail.com" -q
-    echo "*** Generated SSH keys. Your public key is: ***"
-    cat ~/.ssh/id_ed25519.pub
-    echo "---"
-    echo "Please add this public key to your GitHub/GitLab account settings."
-    echo "---"
 else
     echo "SSH key already exists: ~/.ssh/id_ed25519.pub"
 fi
-
-# Output name and email to make sure it's correct
-echo "---"
-echo "*** Verifying Git Configuration and Version ***"
-echo "---"
-echo "Git User Name: $(git config --get user.name)"
-echo "Git User Email: $(git config --get user.email)"
-echo "Git Version: $(git --version)"
 
 # Install nodejs
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
@@ -65,6 +52,24 @@ sudo corepack enable
 echo 'alias pn=pnpm' >> ~/.bashrc
 
 # Output results
+
+# Output github username and email to make sure it's correct
+echo "---"
+echo "*** Verifying Git Configuration and Version ***"
+echo "---"
+echo "Git User Name: $(git config --get user.name)"
+echo "Git User Email: $(git config --get user.email)"
+echo "Git Version: $(git --version)"
+
+# Output SSH key
+echo "---"
+echo "*** Generated SSH keys. Your public key is: ***"
+cat ~/.ssh/id_ed25519.pub
+echo "---"
+echo "Please add this public key to your GitHub/GitLab account settings."
+echo "---"
+
+# Output Node and pnpm versions
 echo "---"
 echo "*** Verification of Node and pnpm installation ***"
 echo "---"
