@@ -43,14 +43,20 @@ if [ "$OS" = "linux" ]; then
   sudo apt update
   sudo apt install -y git curl unzip
 elif [ "$OS" = "macos" ]; then
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "Homebrew not found. Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrew not found. Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-  brew update
-  brew install git curl unzip
+  # Add Homebrew to PATH for this script (Apple Silicon + Intel safe)
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 fi
+
+brew update
+brew install git curl unzip
 
 # --------------------------------------------------
 # Git configuration
