@@ -130,7 +130,7 @@ echo "Git:    $(git --version)"
 echo "pnpm:   $(pnpm --version)"
 echo "Node:   $(node --version)"
 echo "uv:     $(uv --version)"
-echo "Python: $(python --version)"
+echo "Python: $(python3 --version)"
 
 echo "=================================================="
 echo "✅ Setup complete!"
