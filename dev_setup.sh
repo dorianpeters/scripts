@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Exit immediately on error
 set -e
 
 echo "=================================================="
@@ -8,7 +7,7 @@ echo "  JavaScript + Python Dev Environment Setup"
 echo "=================================================="
 
 # --------------------------------------------------
-# OS detection (Ubuntu, macOS, WSL2)
+# OS detection
 # --------------------------------------------------
 OS=""
 IS_WSL=false
@@ -30,10 +29,12 @@ case "$(uname -s)" in
 esac
 
 echo "Detected OS: $OS"
-[ "$IS_WSL" = true ] && echo "Running inside WSL2"
+if [ "$IS_WSL" = true ]; then
+  echo "Running inside WSL2"
+fi
 
 # --------------------------------------------------
-# Install system dependencies
+# System packages
 # --------------------------------------------------
 echo "--------------------------------------------------"
 echo "Installing system packages (git, curl, unzip)"
@@ -42,21 +43,23 @@ echo "--------------------------------------------------"
 if [ "$OS" = "linux" ]; then
   sudo apt update
   sudo apt install -y git curl unzip
+
 elif [ "$OS" = "macos" ]; then
-if ! command -v brew >/dev/null 2>&1; then
-  echo "Homebrew not found. Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew not found. Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-  # Add Homebrew to PATH for this script (Apple Silicon + Intel safe)
-  if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x /usr/local/bin/brew ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
+    # Make brew available immediately
+    if [ -x /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
   fi
-fi
 
-brew update
-brew install git curl unzip
+  brew update
+  brew install git curl unzip
+fi
 
 # --------------------------------------------------
 # Git configuration
@@ -72,7 +75,7 @@ git config --global color.ui auto
 git config --global pull.rebase false
 
 # --------------------------------------------------
-# SSH key setup
+# SSH key
 # --------------------------------------------------
 echo "--------------------------------------------------"
 echo "Checking SSH key"
@@ -82,15 +85,14 @@ if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
   mkdir -p "$HOME/.ssh"
   chmod 700 "$HOME/.ssh"
   ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519" -N "" -C "dpeters08@gmail.com" -q
-  echo "SSH key created. Public key:"
+  echo "SSH public key:"
   cat "$HOME/.ssh/id_ed25519.pub"
-  echo "Add this key to GitHub / GitLab."
 else
-  echo "SSH key already exists."
+  echo "SSH key already exists"
 fi
 
 # --------------------------------------------------
-# pnpm + Node.js (LTS)
+# pnpm + Node LTS
 # --------------------------------------------------
 echo "--------------------------------------------------"
 echo "Installing pnpm and Node.js (LTS)"
@@ -104,7 +106,7 @@ export PATH="$PNPM_HOME:$PATH"
 pnpm env use --global lts
 
 # --------------------------------------------------
-# uv + Python (latest)
+# uv + latest Python
 # --------------------------------------------------
 echo "--------------------------------------------------"
 echo "Installing uv and latest Python"
@@ -112,10 +114,8 @@ echo "--------------------------------------------------"
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Ensure uv and Python are available immediately
 export PATH="$HOME/.local/bin:$PATH"
 
-# Install latest stable Python
 uv python install
 
 # --------------------------------------------------
