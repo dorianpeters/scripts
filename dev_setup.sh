@@ -43,13 +43,11 @@ if [ "$OS" = "linux" ]; then
   sudo apt update
   sudo apt install -y git curl unzip
 elif [ "$OS" = "macos" ]; then
-  # Check if brew exists at common install locations first and add to PATH if so
-  if ! command -v brew >/dev/null 2>&1; then
-    if [ -x /opt/homebrew/bin/brew ]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [ -x /usr/local/bin/brew ]; then
-      eval "$(/usr/local/bin/brew shellenv)"
-    fi
+  # Load Homebrew into PATH if it exists (Apple Silicon + Intel safe)
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
   fi
 
   if ! command -v brew >/dev/null 2>&1; then
@@ -143,7 +141,7 @@ echo "Git:    $(git --version)"
 echo "pnpm:   $(pnpm --version)"
 echo "Node:   $(node --version)"
 echo "uv:     $(uv --version)"
-echo "Python: $(python3 --version)"
+echo "Python: $(uv run python --version)"
 
 echo "=================================================="
 echo "✅ Setup complete!"
