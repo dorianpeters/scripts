@@ -32,6 +32,31 @@ esac
 echo "Detected OS: $OS"
 [ "$IS_WSL" = true ] && echo "Running inside WSL2"
 
+# Linux distro family detection (deb / rpm / suse)
+PKG_MANAGER=""
+if [ "$OS" = "linux" ] && [ -f /etc/os-release ]; then
+  . /etc/os-release
+  case "$ID" in
+    ubuntu|debian|pop|linuxmint|elementary|zorin|kali)
+      PKG_MANAGER="apt"
+      ;;
+    fedora|rhel|centos|rocky|almalinux|amzn)
+      PKG_MANAGER="dnf"
+      ;;
+    opensuse*|suse*)
+      PKG_MANAGER="zypper"
+      ;;
+    *)
+      # Fall back to ID_LIKE for derivative distros
+      case "$ID_LIKE" in
+        *debian*) PKG_MANAGER="apt"   ;;
+        *fedora*) PKG_MANAGER="dnf"   ;;
+        *suse*)   PKG_MANAGER="zypper" ;;
+      esac
+      ;;
+  esac
+fi
+
 # --------------------------------------------------
 # Install system dependencies
 # --------------------------------------------------
@@ -40,8 +65,23 @@ echo "Installing system packages (git, curl, unzip)"
 echo "--------------------------------------------------"
 
 if [ "$OS" = "linux" ]; then
-  sudo apt update
-  sudo apt install -y git curl unzip
+  case "$PKG_MANAGER" in
+    apt)
+      sudo apt update
+      sudo apt install -y git curl unzip
+      ;;
+    dnf)
+      sudo dnf install -y git curl unzip
+      ;;
+    zypper)
+      sudo zypper install -y git curl unzip
+      ;;
+    *)
+      echo "Unsupported Linux distribution (no apt/dnf/zypper detected)."
+      echo "Please install git, curl, and unzip manually, then re-run this script."
+      exit 1
+      ;;
+  esac
 elif [ "$OS" = "macos" ]; then
   # Load Homebrew into PATH if it exists (Apple Silicon + Intel safe)
   if [ -x /opt/homebrew/bin/brew ]; then
