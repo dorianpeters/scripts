@@ -43,20 +43,29 @@ if [ "$OS" = "linux" ]; then
   sudo apt update
   sudo apt install -y git curl unzip
 elif [ "$OS" = "macos" ]; then
-if ! command -v brew >/dev/null 2>&1; then
-  echo "Homebrew not found. Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-  # Add Homebrew to PATH for this script (Apple Silicon + Intel safe)
-  if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x /usr/local/bin/brew ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
+  # Check if brew exists at common install locations first and add to PATH if so
+  if ! command -v brew >/dev/null 2>&1; then
+    if [ -x /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
   fi
-fi
 
-brew update
-brew install git curl unzip
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew not found. Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add Homebrew to PATH for this script (Apple Silicon + Intel safe)
+    if [ -x /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  fi
+
+  brew update
+  brew install git curl unzip
 fi  # end: if [ "$OS" = "linux" ] / elif [ "$OS" = "macos" ]
 
 # --------------------------------------------------
@@ -99,8 +108,12 @@ echo "--------------------------------------------------"
 
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+if [ "$OS" = "macos" ]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
+export PATH="$PNPM_HOME:$PNPM_HOME/bin:$PATH"
 
 pnpm runtime set node lts -g
 
