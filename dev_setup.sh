@@ -102,7 +102,7 @@ curl -fsSL https://get.pnpm.io/install.sh | sh -
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
-pnpm env use --global lts
+pnpm runtime set node lts -g
 
 # --------------------------------------------------
 # uv + Python (latest)
