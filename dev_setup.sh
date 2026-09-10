@@ -58,6 +58,35 @@ if [ "$OS" = "linux" ] && [ -f /etc/os-release ]; then
 fi
 
 # --------------------------------------------------
+# Install Minimal System Dependencies (Linux)
+# --------------------------------------------------
+if [ "$OS" = "linux" ]; then
+  echo "--------------------------------------------------"
+  echo "Ensuring system packages (curl, git, unzip, build tools)"
+  echo "--------------------------------------------------"
+  case "$PKG_MANAGER" in
+    apt)
+      sudo apt update
+      sudo apt install -y curl git unzip build-essential
+      ;;
+    dnf)
+      sudo dnf install -y curl git unzip gcc gcc-c++ make
+      ;;
+    zypper)
+      sudo zypper install -y curl git unzip gcc gcc-c++ make
+      ;;
+    *)
+      echo "Notice: Non-standard package manager. Ensure curl, git, unzip, and C build tools are installed."
+      ;;
+  esac
+elif [ "$OS" = "macos" ]; then
+  if ! command -v git >/dev/null 2>&1; then
+    echo "Git not found. Triggering macOS Command Line Tools installation..."
+    xcode-select --install || true
+  fi
+fi
+
+# --------------------------------------------------
 # Personal Information Resolution (Git Name & Email)
 # --------------------------------------------------
 # Priority order:
@@ -115,96 +144,95 @@ EOF
 fi
 
 # --------------------------------------------------
-# Homebrew Detection & Installation
+# mise Installation & Shell Configuration
 # --------------------------------------------------
 echo "--------------------------------------------------"
-echo "Checking Homebrew"
+echo "Checking mise (tool manager)"
 echo "--------------------------------------------------"
 
-load_homebrew() {
-  if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  elif [ -x /usr/local/bin/brew ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  elif command -v brew >/dev/null 2>&1; then
-    eval "$(brew shellenv)"
-  fi
-}
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 
-load_homebrew
-
-if ! command -v brew >/dev/null 2>&1; then
-  echo "Homebrew not found. Installing Homebrew..."
-
-  if [ "$OS" = "linux" ]; then
-    echo "Installing system prerequisites for Homebrew..."
-    case "$PKG_MANAGER" in
-      apt)
-        sudo apt update
-        sudo apt install -y build-essential procps curl file git
-        ;;
-      dnf)
-        sudo dnf install -y gcc gcc-c++ make procps-ng curl file git
-        ;;
-      zypper)
-        sudo zypper install -y gcc gcc-c++ make procps curl file git
-        ;;
-      *)
-        echo "Unsupported Linux distribution package manager."
-        echo "Please install build tools, procps, curl, file, and git, then re-run."
-        exit 1
-        ;;
-    esac
-  fi
-
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  load_homebrew
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise not found. Installing mise via https://mise.run..."
+  curl -fsSL https://mise.run | sh
 fi
 
-if ! command -v brew >/dev/null 2>&1; then
-  echo "Error: Homebrew installation failed or brew is not in PATH."
-  exit 1
+if ! command -v mise >/dev/null 2>&1; then
+  if [ -x "$HOME/.local/bin/mise" ]; then
+    export PATH="$HOME/.local/bin:$PATH"
+  else
+    echo "Error: mise installation failed or ~/.local/bin/mise is not executable."
+    exit 1
+  fi
 fi
 
-echo "Homebrew version: $(brew --version | head -n 1)"
+echo "mise version: $(mise --version)"
 
-# Persist Homebrew to shell profiles
-BREW_PREFIX="$(brew --prefix)"
-BREW_SHELLENV_LINE="eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\""
+# Persist mise activation to shell profiles
+BASH_ACTIVATE_LINE='eval "$($HOME/.local/bin/mise activate bash)"'
+ZSH_ACTIVATE_LINE='eval "$($HOME/.local/bin/mise activate zsh)"'
 
 if [ -f "$HOME/.bashrc" ] || [ -n "$BASH_VERSION" ]; then
   touch "$HOME/.bashrc"
-  if ! grep -qF "brew shellenv" "$HOME/.bashrc"; then
+  if ! grep -qF "mise activate bash" "$HOME/.bashrc"; then
     echo "" >> "$HOME/.bashrc"
-    echo "# Homebrew environment" >> "$HOME/.bashrc"
-    echo "$BREW_SHELLENV_LINE" >> "$HOME/.bashrc"
-    echo "Added Homebrew to ~/.bashrc"
+    echo "# mise tool manager" >> "$HOME/.bashrc"
+    echo "$BASH_ACTIVATE_LINE" >> "$HOME/.bashrc"
+    echo "Added mise activation to ~/.bashrc"
   fi
 fi
 
 if command -v zsh >/dev/null 2>&1 || [ -f "$HOME/.zshrc" ]; then
   touch "$HOME/.zshrc"
-  if ! grep -qF "brew shellenv" "$HOME/.zshrc"; then
+  if ! grep -qF "mise activate zsh" "$HOME/.zshrc"; then
     echo "" >> "$HOME/.zshrc"
-    echo "# Homebrew environment" >> "$HOME/.zshrc"
-    echo "$BREW_SHELLENV_LINE" >> "$HOME/.zshrc"
-    echo "Added Homebrew to ~/.zshrc"
+    echo "# mise tool manager" >> "$HOME/.zshrc"
+    echo "$ZSH_ACTIVATE_LINE" >> "$HOME/.zshrc"
+    echo "Added mise activation to ~/.zshrc"
   fi
 fi
 
-# Ensure ~/.local/bin is in PATH for user scripts and uv tools
-export PATH="$HOME/.local/bin:$PATH"
-
 # --------------------------------------------------
-# Install Tools via Homebrew (git, gh, uv, bun)
+# Configure mise Settings
 # --------------------------------------------------
 echo "--------------------------------------------------"
-echo "Installing tools via Homebrew (git, gh, uv, bun)"
+echo "Configuring mise settings"
 echo "--------------------------------------------------"
 
-brew install git gh uv bun
+mise settings set clean true
+mise settings set yes true
+mise settings set compile false
+
+echo "mise settings configured: clean=true, yes=true, compile=false"
+
+# --------------------------------------------------
+# Install Developer Tools via mise
+# --------------------------------------------------
+echo "--------------------------------------------------"
+echo "Installing tools via mise"
+echo "--------------------------------------------------"
+
+TOOLS=(
+  node@lts
+  aube
+  uv
+  gh
+  zoxide
+  eza
+  fd
+  ripgrep
+  bat
+  sd
+  jq
+  btop
+  tealdeer
+  lazygit
+  fzf
+)
+
+echo "Installing globally: ${TOOLS[*]}"
+mise use -g "${TOOLS[@]}"
+mise install
 
 # --------------------------------------------------
 # Git Configuration
@@ -272,12 +300,20 @@ echo "--------------------------------------------------"
 echo "Verification"
 echo "--------------------------------------------------"
 
-echo "Homebrew: $(brew --version | head -n 1)"
-echo "Git:      $(git --version)"
-echo "gh:       $(gh --version | head -n 1)"
-echo "Bun:      $(bun --version 2>/dev/null || echo 'Not installed')"
-echo "uv:       $(uv --version)"
+echo "mise:     $(mise --version 2>/dev/null || echo 'Not installed')"
+echo "Node:     $(node --version 2>/dev/null || echo 'Not installed')"
+echo "aube:     $(aube --version 2>/dev/null || echo 'Installed')"
+echo "uv:       $(uv --version 2>/dev/null || echo 'Not installed')"
 echo "Python:   $(uv run python --version 2>/dev/null || echo 'Not installed')"
+echo "Git:      $(git --version 2>/dev/null || echo 'Not installed')"
+echo "gh:       $(gh --version 2>/dev/null | head -n 1 || echo 'Not installed')"
+echo "eza:      $(eza --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "ripgrep:  $(rg --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "fd:       $(fd --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "bat:      $(bat --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "zoxide:   $(zoxide --version 2>/dev/null || echo 'Installed')"
+echo "fzf:      $(fzf --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "lazygit:  $(lazygit --version 2>/dev/null | head -n 1 || echo 'Installed')"
 
 if git config --global user.name >/dev/null 2>&1 && git config --global user.email >/dev/null 2>&1; then
   echo "Git User: $(git config --global user.name) <$(git config --global user.email)>"

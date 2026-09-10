@@ -4,7 +4,7 @@ This repository contains scripts for setting up development environments across 
 
 ## dev_setup.sh
 
-A cross-platform development setup script that standardizes tool management using [Homebrew](https://brew.sh/).
+A cross-platform development setup script that standardizes tool and runtime management using [mise](https://mise.jdx.dev/).
 
 ### Supported Platforms
 - **macOS** (Apple Silicon & Intel)
@@ -13,13 +13,36 @@ A cross-platform development setup script that standardizes tool management usin
 - **WSL2** (Windows Subsystem for Linux)
 - **openSUSE**
 
+### Core Manager: mise
+- **mise**: Automatically installed via `https://mise.run` into `~/.local/bin/mise` (no root or Homebrew required).
+- Configured with non-interactive, fast defaults:
+  - `clean = true`: Automatically removes old, superseded versions during `mise upgrade`.
+  - `yes = true`: Suppresses interactive confirmation prompts during tool installations.
+  - `compile = false`: Prefers fast pre-compiled binaries instead of building from source.
+- Persists shell activation in `~/.bashrc` and `~/.zshrc`.
+
 ### Tools Installed & Configured
-- **Homebrew**: Automatically bootstrapped (including system prerequisites on Linux) if missing.
-- **git**: Installed via Homebrew, configured with user details and recommended defaults (`init.defaultBranch main`, `color.ui auto`, `pull.rebase false`).
-- **gh** (GitHub CLI): Installed via Homebrew; prompts to run `gh auth login` to authenticate and automatically generate/upload SSH keys to GitHub.
-- **bun**: Fast all-in-one JavaScript/TypeScript runtime and package manager installed via Homebrew.
-- **uv**: Fast Python package manager installed via Homebrew.
-- **Python**: Latest stable Python installed and managed via `uv python install`.
+- **JavaScript & Node**:
+  - `node@lts`: Modern Node.js runtime.
+  - `aube`: Fast, Rust-based Node package manager from the creator of mise (replacing bun and pnpm).
+- **Python**:
+  - `uv`: Fast Python package and tool manager.
+  - Latest stable Python installed and managed via `uv python install`.
+- **Git & GitHub**:
+  - `git`: Installed via system packages and configured with user details and recommended defaults (`init.defaultBranch main`, `color.ui auto`, `pull.rebase false`).
+  - `gh` (GitHub CLI): Prompts to run `gh auth login` to authenticate and automatically generate/upload SSH keys to GitHub.
+- **Modern CLI Utilities**:
+  - `zoxide`: Smarter `cd` command.
+  - `eza`: Modern, active replacement for `exa` / `ls`.
+  - `fd`: Fast, user-friendly alternative to `find`.
+  - `ripgrep` (`rg`): Extremely fast search alternative to `grep`.
+  - `bat`: Syntax-highlighting `cat` clone with Git integration.
+  - `sd`: Intuitive find & replace CLI (`sed` alternative).
+  - `jq`: Command-line JSON processor.
+  - `btop`: Modern terminal resource monitor.
+  - `tealdeer` (`tldr`): Ultra-fast simplified man pages.
+  - `lazygit`: Simple terminal UI for git commands.
+  - `fzf`: Interactive command-line fuzzy finder.
 
 ### Personal Information & Configuration
 Your personal Git information is decoupled from the script and resolved using the following order of precedence:
