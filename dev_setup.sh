@@ -199,11 +199,11 @@ echo "--------------------------------------------------"
 echo "Configuring mise settings"
 echo "--------------------------------------------------"
 
-mise settings set clean true
+mise settings set upgrade.auto_prune true
 mise settings set yes true
-mise settings set compile false
+mise settings set all_compile false
 
-echo "mise settings configured: clean=true, yes=true, compile=false"
+echo "mise settings configured: upgrade.auto_prune=true, yes=true, all_compile=false"
 
 # --------------------------------------------------
 # Install Developer Tools via mise

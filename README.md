@@ -16,9 +16,9 @@ A cross-platform development setup script that standardizes tool and runtime man
 ### Core Manager: mise
 - **mise**: Automatically installed via `https://mise.run` into `~/.local/bin/mise` (no root or Homebrew required).
 - Configured with non-interactive, fast defaults:
-  - `clean = true`: Automatically removes old, superseded versions during `mise upgrade`.
+  - `upgrade.auto_prune = true`: Automatically removes old, superseded versions during `mise upgrade`.
   - `yes = true`: Suppresses interactive confirmation prompts during tool installations.
-  - `compile = false`: Prefers fast pre-compiled binaries instead of building from source.
+  - `all_compile = false`: Prefers fast pre-compiled binaries instead of building from source.
 - Persists shell activation in `~/.bashrc` and `~/.zshrc`.
 
 ### Tools Installed & Configured
