@@ -32,6 +32,14 @@ esac
 echo "Detected OS: $OS"
 [ "$IS_WSL" = true ] && echo "Environment: WSL2"
 
+# Detect interactive terminal (supports direct execution as well as piped execution like curl | bash)
+TTY_DEV=""
+if [ -t 0 ]; then
+  TTY_DEV="/dev/stdin"
+elif [ -r /dev/tty ] && [ -w /dev/tty ]; then
+  TTY_DEV="/dev/tty"
+fi
+
 PKG_MANAGER=""
 if [ "$OS" = "linux" ] && [ -f /etc/os-release ]; then
   # Source os-release to determine distro family
@@ -86,62 +94,6 @@ elif [ "$OS" = "macos" ]; then
   fi
 fi
 
-# --------------------------------------------------
-# Personal Information Resolution (Git Name & Email)
-# --------------------------------------------------
-# Priority order:
-# 1. Pre-existing environment variables (GIT_NAME / GIT_EMAIL or GIT_AUTHOR_*)
-# 2. Local or home .dev_setup.env configuration file
-# 3. Existing global git configuration
-# 4. Interactive prompt (if running in a terminal)
-
-GIT_NAME="${GIT_NAME:-$GIT_AUTHOR_NAME}"
-GIT_EMAIL="${GIT_EMAIL:-$GIT_AUTHOR_EMAIL}"
-
-if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
-  if [ -f "$PWD/.dev_setup.env" ]; then
-    echo "Loading configuration from $PWD/.dev_setup.env"
-    # shellcheck disable=SC1091
-    . "$PWD/.dev_setup.env"
-  elif [ -f "$HOME/.dev_setup.env" ]; then
-    echo "Loading configuration from $HOME/.dev_setup.env"
-    # shellcheck disable=SC1091
-    . "$HOME/.dev_setup.env"
-  fi
-  GIT_NAME="${GIT_NAME:-$GIT_AUTHOR_NAME}"
-  GIT_EMAIL="${GIT_EMAIL:-$GIT_AUTHOR_EMAIL}"
-fi
-
-if [ -z "$GIT_NAME" ] && command -v git >/dev/null 2>&1; then
-  GIT_NAME="$(git config --global user.name 2>/dev/null || true)"
-fi
-
-if [ -z "$GIT_EMAIL" ] && command -v git >/dev/null 2>&1; then
-  GIT_EMAIL="$(git config --global user.email 2>/dev/null || true)"
-fi
-
-if [ -t 0 ]; then
-  if [ -z "$GIT_NAME" ]; then
-    read -rp "Enter your Git user name: " GIT_NAME
-  fi
-  if [ -z "$GIT_EMAIL" ]; then
-    read -rp "Enter your Git user email: " GIT_EMAIL
-  fi
-
-  if [ -n "$GIT_NAME" ] && [ -n "$GIT_EMAIL" ] && [ ! -f "$HOME/.dev_setup.env" ] && [ ! -f "$PWD/.dev_setup.env" ]; then
-    read -rp "Save these details to ~/.dev_setup.env for future runs? [y/N]: " SAVE_ENV
-    case "$SAVE_ENV" in
-      [yY][eE][sS]|[yY])
-        cat <<EOF > "$HOME/.dev_setup.env"
-GIT_NAME="$GIT_NAME"
-GIT_EMAIL="$GIT_EMAIL"
-EOF
-        chmod 600 "$HOME/.dev_setup.env"
-        echo "Saved configuration to $HOME/.dev_setup.env"
-        ;;
-    esac
-  fi
-fi
 
 # --------------------------------------------------
 # mise Installation & Shell Configuration
@@ -241,6 +193,63 @@ echo "--------------------------------------------------"
 echo "Configuring Git"
 echo "--------------------------------------------------"
 
+# Priority order:
+# 1. Pre-existing environment variables (GIT_NAME / GIT_EMAIL or GIT_AUTHOR_*)
+# 2. Local or home .dev_setup.env configuration file
+# 3. Existing global git configuration
+# 4. Interactive prompt (if running in an interactive terminal or /dev/tty)
+
+GIT_NAME="${GIT_NAME:-$GIT_AUTHOR_NAME}"
+GIT_EMAIL="${GIT_EMAIL:-$GIT_AUTHOR_EMAIL}"
+
+LOADED_FROM_ENV=false
+if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
+  if [ -f "$PWD/.dev_setup.env" ]; then
+    echo "Loading configuration from $PWD/.dev_setup.env"
+    # shellcheck disable=SC1091
+    . "$PWD/.dev_setup.env"
+    LOADED_FROM_ENV=true
+  elif [ -f "$HOME/.dev_setup.env" ]; then
+    echo "Loading configuration from $HOME/.dev_setup.env"
+    # shellcheck disable=SC1091
+    . "$HOME/.dev_setup.env"
+    LOADED_FROM_ENV=true
+  fi
+  GIT_NAME="${GIT_NAME:-$GIT_AUTHOR_NAME}"
+  GIT_EMAIL="${GIT_EMAIL:-$GIT_AUTHOR_EMAIL}"
+fi
+
+if [ -z "$GIT_NAME" ] && command -v git >/dev/null 2>&1; then
+  GIT_NAME="$(git config --global user.name 2>/dev/null || true)"
+fi
+
+if [ -z "$GIT_EMAIL" ] && command -v git >/dev/null 2>&1; then
+  GIT_EMAIL="$(git config --global user.email 2>/dev/null || true)"
+fi
+
+if [ -n "$TTY_DEV" ]; then
+  if [ -z "$GIT_NAME" ]; then
+    read -rp "Enter your Git user name: " GIT_NAME < "$TTY_DEV"
+  fi
+  if [ -z "$GIT_EMAIL" ]; then
+    read -rp "Enter your Git user email: " GIT_EMAIL < "$TTY_DEV"
+  fi
+
+  if [ -n "$GIT_NAME" ] && [ -n "$GIT_EMAIL" ] && [ "$LOADED_FROM_ENV" = false ]; then
+    read -rp "Save these details to ~/.dev_setup.env for future runs? [y/N]: " SAVE_ENV < "$TTY_DEV"
+    case "$SAVE_ENV" in
+      [yY][eE][sS]|[yY])
+        cat <<EOF > "$HOME/.dev_setup.env"
+GIT_NAME="$GIT_NAME"
+GIT_EMAIL="$GIT_EMAIL"
+EOF
+        chmod 600 "$HOME/.dev_setup.env"
+        echo "Saved configuration to $HOME/.dev_setup.env"
+        ;;
+    esac
+  fi
+fi
+
 if [ -n "$GIT_NAME" ]; then
   git config --global user.name "$GIT_NAME"
   echo "Configured git user.name: $GIT_NAME"
@@ -253,6 +262,12 @@ if [ -n "$GIT_EMAIL" ]; then
   echo "Configured git user.email: $GIT_EMAIL"
 else
   echo "Notice: Git user.email not provided. Keeping current: $(git config --global user.email 2>/dev/null || echo 'unset')"
+fi
+
+if { [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; } && [ -z "$TTY_DEV" ]; then
+  echo "Tip: Run in an interactive terminal to be prompted, or specify credentials via:"
+  echo "     - Environment variables: GIT_NAME=\"...\" GIT_EMAIL=\"...\" ./dev_setup.sh"
+  echo "     - Configuration file: ~/.dev_setup.env or .dev_setup.env"
 fi
 
 git config --global init.defaultBranch main
@@ -268,12 +283,12 @@ echo "--------------------------------------------------"
 
 if gh auth status >/dev/null 2>&1; then
   echo "GitHub CLI is authenticated."
-elif [ -t 0 ]; then
+elif [ -n "$TTY_DEV" ]; then
   echo "GitHub CLI is not authenticated."
-  read -rp "Would you like to run 'gh auth login' now to authenticate and set up SSH keys? [y/N]: " RUN_GH_AUTH
+  read -rp "Would you like to run 'gh auth login' now to authenticate and set up SSH keys? [y/N]: " RUN_GH_AUTH < "$TTY_DEV"
   case "$RUN_GH_AUTH" in
     [yY][eE][sS]|[yY])
-      gh auth login
+      gh auth login < "$TTY_DEV"
       ;;
     *)
       echo "Skipping 'gh auth login'."
