@@ -64,10 +64,3 @@ Your personal Git information is decoupled from the script and resolved using th
 4. **Interactive Prompt**:
    If running in an interactive terminal and no details are found, the script prompts for your name and email, with an option to save them to `~/.dev_setup.env`.
 
----
-
-## js_setup.sh
-Installs Node.js using the NodeSource repository on Debian-based systems.
-
-## new_js_setup.sh
-Installs Node.js using the fnm (Fast Node Manager) version manager.
