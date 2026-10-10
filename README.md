@@ -24,7 +24,7 @@ A cross-platform development setup script that standardizes tool and runtime man
 ### Tools Installed & Configured
 - **JavaScript & Node**:
   - `node@lts`: Modern Node.js runtime.
-  - `upm`: Small and fast Node package manager.
+  - `upm`: Small and fast Node package manager (aliased to `npm` in shell profiles).
 - **Python**:
   - `uv`: Fast Python package and tool manager.
   - Latest stable Python installed and managed via `uv python install`.

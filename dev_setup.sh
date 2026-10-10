@@ -132,6 +132,10 @@ if [ -f "$HOME/.bashrc" ] || [ -n "$BASH_VERSION" ]; then
     echo "$BASH_ACTIVATE_LINE" >> "$HOME/.bashrc"
     echo "Added mise activation to ~/.bashrc"
   fi
+  if ! grep -qF "alias npm=" "$HOME/.bashrc"; then
+    echo "alias npm='upm'" >> "$HOME/.bashrc"
+    echo "Added npm alias (npm -> upm) to ~/.bashrc"
+  fi
 fi
 
 if command -v zsh >/dev/null 2>&1 || [ -f "$HOME/.zshrc" ]; then
@@ -141,6 +145,10 @@ if command -v zsh >/dev/null 2>&1 || [ -f "$HOME/.zshrc" ]; then
     echo "# mise tool manager" >> "$HOME/.zshrc"
     echo "$ZSH_ACTIVATE_LINE" >> "$HOME/.zshrc"
     echo "Added mise activation to ~/.zshrc"
+  fi
+  if ! grep -qF "alias npm=" "$HOME/.zshrc"; then
+    echo "alias npm='upm'" >> "$HOME/.zshrc"
+    echo "Added npm alias (npm -> upm) to ~/.zshrc"
   fi
 fi
 
