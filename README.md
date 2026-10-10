@@ -24,7 +24,7 @@ A cross-platform development setup script that standardizes tool and runtime man
 ### Tools Installed & Configured
 - **JavaScript & Node**:
   - `node@lts`: Modern Node.js runtime.
-  - `aube`: Fast, Rust-based Node package manager from the creator of mise (replacing bun and pnpm).
+  - `upm`: Small and fast Node package manager.
 - **Python**:
   - `uv`: Fast Python package and tool manager.
   - Latest stable Python installed and managed via `uv python install`.
@@ -43,6 +43,7 @@ A cross-platform development setup script that standardizes tool and runtime man
   - `tealdeer` (`tldr`): Ultra-fast simplified man pages.
   - `lazygit`: Simple terminal UI for git commands.
   - `fzf`: Interactive command-line fuzzy finder.
+  - `antigravity` (`agy`): Gemini CLI
 
 ### Personal Information & Configuration
 Your personal Git information is decoupled from the script and resolved using the following order of precedence:
@@ -63,4 +64,3 @@ Your personal Git information is decoupled from the script and resolved using th
    Uses existing `user.name` and `user.email` from `git config --global` if present.
 4. **Interactive Prompt**:
    If running in an interactive terminal and no details are found, the script prompts for your name and email, with an option to save them to `~/.dev_setup.env`.
-

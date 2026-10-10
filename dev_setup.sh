@@ -166,7 +166,7 @@ echo "--------------------------------------------------"
 
 TOOLS=(
   node@lts
-  aube
+  npm:upm
   uv
   gh
   zoxide
@@ -180,6 +180,7 @@ TOOLS=(
   tealdeer
   lazygit
   fzf
+  antigravity-cli
 )
 
 echo "Installing globally: ${TOOLS[*]}"
@@ -317,7 +318,7 @@ echo "--------------------------------------------------"
 
 echo "mise:     $(mise --version 2>/dev/null || echo 'Not installed')"
 echo "Node:     $(node --version 2>/dev/null || echo 'Not installed')"
-echo "aube:     $(aube --version 2>/dev/null || echo 'Installed')"
+echo "upm:      $(upm --version 2>/dev/null || echo 'Installed')"
 echo "uv:       $(uv --version 2>/dev/null || echo 'Not installed')"
 echo "Python:   $(uv run python --version 2>/dev/null || echo 'Not installed')"
 echo "Git:      $(git --version 2>/dev/null || echo 'Not installed')"
@@ -329,6 +330,7 @@ echo "bat:      $(bat --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "zoxide:   $(zoxide --version 2>/dev/null || echo 'Installed')"
 echo "fzf:      $(fzf --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "lazygit:  $(lazygit --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "agy:      $(agy --version 2>/dev/null || echo 'Installed')"
 
 if git config --global user.name >/dev/null 2>&1 && git config --global user.email >/dev/null 2>&1; then
   echo "Git User: $(git config --global user.name) <$(git config --global user.email)>"
