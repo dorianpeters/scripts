@@ -51,14 +51,10 @@ if [ "$OS" = "linux" ] && [ -f /etc/os-release ]; then
     fedora|rhel|centos|rocky|almalinux|amzn)
       PKG_MANAGER="dnf"
       ;;
-    opensuse*|suse*)
-      PKG_MANAGER="zypper"
-      ;;
     *)
       case "$ID_LIKE" in
         *debian*) PKG_MANAGER="apt"    ;;
         *fedora*) PKG_MANAGER="dnf"    ;;
-        *suse*)   PKG_MANAGER="zypper" ;;
       esac
       ;;
   esac
@@ -79,9 +75,6 @@ if [ "$OS" = "linux" ]; then
       ;;
     dnf)
       sudo dnf install -y curl git unzip gcc gcc-c++ make
-      ;;
-    zypper)
-      sudo zypper install -y curl git unzip gcc gcc-c++ make
       ;;
     *)
       echo "Notice: Non-standard package manager. Ensure curl, git, unzip, and C build tools are installed."
@@ -132,10 +125,6 @@ if [ -f "$HOME/.bashrc" ] || [ -n "$BASH_VERSION" ]; then
     echo "$BASH_ACTIVATE_LINE" >> "$HOME/.bashrc"
     echo "Added mise activation to ~/.bashrc"
   fi
-  if ! grep -qF "alias npm=" "$HOME/.bashrc"; then
-    echo "alias npm='upm'" >> "$HOME/.bashrc"
-    echo "Added npm alias (npm -> upm) to ~/.bashrc"
-  fi
 fi
 
 if command -v zsh >/dev/null 2>&1 || [ -f "$HOME/.zshrc" ]; then
@@ -145,10 +134,6 @@ if command -v zsh >/dev/null 2>&1 || [ -f "$HOME/.zshrc" ]; then
     echo "# mise tool manager" >> "$HOME/.zshrc"
     echo "$ZSH_ACTIVATE_LINE" >> "$HOME/.zshrc"
     echo "Added mise activation to ~/.zshrc"
-  fi
-  if ! grep -qF "alias npm=" "$HOME/.zshrc"; then
-    echo "alias npm='upm'" >> "$HOME/.zshrc"
-    echo "Added npm alias (npm -> upm) to ~/.zshrc"
   fi
 fi
 
@@ -326,6 +311,7 @@ echo "--------------------------------------------------"
 
 echo "mise:     $(mise --version 2>/dev/null || echo 'Not installed')"
 echo "Node:     $(node --version 2>/dev/null || echo 'Not installed')"
+echo "npm:      $(npm --version 2>/dev/null || echo 'Not installed')"
 echo "upm:      $(upm --version 2>/dev/null || echo 'Installed')"
 echo "uv:       $(uv --version 2>/dev/null || echo 'Not installed')"
 echo "Python:   $(uv run python --version 2>/dev/null || echo 'Not installed')"
