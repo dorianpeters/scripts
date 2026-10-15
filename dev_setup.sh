@@ -71,10 +71,10 @@ if [ "$OS" = "linux" ]; then
   case "$PKG_MANAGER" in
     apt)
       sudo apt update
-      sudo apt install -y curl git unzip build-essential
+      sudo apt install -y curl git unzip build-essential htop
       ;;
     dnf)
-      sudo dnf install -y curl git unzip gcc gcc-c++ make
+      sudo dnf install -y curl git unzip gcc gcc-c++ make htop
       ;;
     *)
       echo "Notice: Non-standard package manager. Ensure curl, git, unzip, and C build tools are installed."
@@ -86,10 +86,12 @@ elif [ "$OS" = "macos" ]; then
     xcode-select --install || true
   fi
   if command -v brew >/dev/null 2>&1; then
-    if ! command -v btop >/dev/null 2>&1; then
-      echo "Installing btop via Homebrew..."
-      brew install btop || true
-    fi
+    for pkg in btop htop; do
+      if ! command -v "$pkg" >/dev/null 2>&1; then
+        echo "Installing $pkg via Homebrew..."
+        NONINTERACTIVE=1 brew install "$pkg" || true
+      fi
+    done
   fi
 fi
 
@@ -175,6 +177,7 @@ TOOLS=(
   bat
   sd
   jq
+  fastfetch
   tealdeer
   lazygit
   fzf
@@ -333,6 +336,8 @@ echo "zoxide:   $(zoxide --version 2>/dev/null || echo 'Installed')"
 echo "fzf:      $(fzf --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "lazygit:  $(lazygit --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "btop:     $(btop --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "htop:     $(htop --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "fastfetch: $(fastfetch --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "agy:      $(agy --version 2>/dev/null || echo 'Installed')"
 
 if git config --global user.name >/dev/null 2>&1 && git config --global user.email >/dev/null 2>&1; then
