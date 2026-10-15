@@ -85,6 +85,12 @@ elif [ "$OS" = "macos" ]; then
     echo "Git not found. Triggering macOS Command Line Tools installation..."
     xcode-select --install || true
   fi
+  if command -v brew >/dev/null 2>&1; then
+    if ! command -v btop >/dev/null 2>&1; then
+      echo "Installing btop via Homebrew..."
+      brew install btop || true
+    fi
+  fi
 fi
 
 
@@ -169,12 +175,14 @@ TOOLS=(
   bat
   sd
   jq
-  btop
   tealdeer
   lazygit
   fzf
   antigravity-cli
 )
+
+# btop prebuilt binaries in aqua/mise only support Linux; macOS installs via Homebrew
+[ "$OS" = "linux" ] && TOOLS+=(btop)
 
 echo "Installing globally: ${TOOLS[*]}"
 mise use -g "${TOOLS[@]}"
@@ -324,6 +332,7 @@ echo "bat:      $(bat --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "zoxide:   $(zoxide --version 2>/dev/null || echo 'Installed')"
 echo "fzf:      $(fzf --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "lazygit:  $(lazygit --version 2>/dev/null | head -n 1 || echo 'Installed')"
+echo "btop:     $(btop --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "agy:      $(agy --version 2>/dev/null || echo 'Installed')"
 
 if git config --global user.name >/dev/null 2>&1 && git config --global user.email >/dev/null 2>&1; then
