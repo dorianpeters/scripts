@@ -31,12 +31,12 @@ A cross-platform development setup script that standardizes tool and runtime man
 - **Git & GitHub**:
   - `git`: Installed via system packages and configured with user details and recommended defaults (`init.defaultBranch main`, `color.ui auto`, `pull.rebase false`).
   - `gh` (GitHub CLI): Prompts to run `gh auth login` to authenticate and automatically generate/upload SSH keys to GitHub.
-- **Modern CLI Utilities**:
+- **Modern CLI Utilities & AI**:
   - `eza`: Modern, active replacement for `exa` / `ls`.
   - `btop`: Modern terminal resource monitor.
   - `htop`: Interactive process viewer.
   - `fastfetch`: Fast, customizable system information tool.
-  - `antigravity` (`agy`): Gemini CLI
+  - `antigravity` (`agy`): Gemini CLI (installed via native installer: `curl -fsSL https://antigravity.google/cli/install.sh | bash`).
 
 ### Personal Information & Configuration
 Your personal Git information is decoupled from the script and resolved using the following order of precedence:

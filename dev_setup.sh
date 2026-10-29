@@ -172,7 +172,6 @@ TOOLS=(
   gh
   eza
   fastfetch
-  antigravity-cli
 )
 
 # btop prebuilt binaries in aqua/mise only support Linux; macOS installs via Homebrew
@@ -303,6 +302,15 @@ echo "Installing Python via uv"
 echo "--------------------------------------------------"
 
 uv python install
+
+# --------------------------------------------------
+# Antigravity CLI (agy)
+# --------------------------------------------------
+echo "--------------------------------------------------"
+echo "Installing Antigravity CLI (agy)"
+echo "--------------------------------------------------"
+
+curl -fsSL https://antigravity.google/cli/install.sh | bash
 
 # --------------------------------------------------
 # Verification

@@ -57,4 +57,10 @@ else
   echo "--> uv not found in PATH, skipping."
 fi
 
+# Update Antigravity CLI (if installed)
+if has_cmd agy; then
+  echo "--> Updating Antigravity CLI (agy)..."
+  agy update || echo "agy update skipped"
+fi
+
 echo "==> All updates complete!"
