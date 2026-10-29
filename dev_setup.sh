@@ -167,20 +167,11 @@ echo "--------------------------------------------------"
 
 TOOLS=(
   node@lts
-  npm:upm
+  pnpm
   uv
   gh
-  zoxide
   eza
-  fd
-  ripgrep
-  bat
-  sd
-  jq
   fastfetch
-  tealdeer
-  lazygit
-  fzf
   antigravity-cli
 )
 
@@ -323,18 +314,12 @@ echo "--------------------------------------------------"
 echo "mise:     $(mise --version 2>/dev/null || echo 'Not installed')"
 echo "Node:     $(node --version 2>/dev/null || echo 'Not installed')"
 echo "npm:      $(npm --version 2>/dev/null || echo 'Not installed')"
-echo "upm:      $(upm --version 2>/dev/null || echo 'Installed')"
+echo "pnpm:     $(pnpm --version 2>/dev/null || echo 'Not installed')"
 echo "uv:       $(uv --version 2>/dev/null || echo 'Not installed')"
 echo "Python:   $(uv run python --version 2>/dev/null || echo 'Not installed')"
 echo "Git:      $(git --version 2>/dev/null || echo 'Not installed')"
 echo "gh:       $(gh --version 2>/dev/null | head -n 1 || echo 'Not installed')"
 echo "eza:      $(eza --version 2>/dev/null | head -n 1 || echo 'Installed')"
-echo "ripgrep:  $(rg --version 2>/dev/null | head -n 1 || echo 'Installed')"
-echo "fd:       $(fd --version 2>/dev/null | head -n 1 || echo 'Installed')"
-echo "bat:      $(bat --version 2>/dev/null | head -n 1 || echo 'Installed')"
-echo "zoxide:   $(zoxide --version 2>/dev/null || echo 'Installed')"
-echo "fzf:      $(fzf --version 2>/dev/null | head -n 1 || echo 'Installed')"
-echo "lazygit:  $(lazygit --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "btop:     $(btop --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "htop:     $(htop --version 2>/dev/null | head -n 1 || echo 'Installed')"
 echo "fastfetch: $(fastfetch --version 2>/dev/null | head -n 1 || echo 'Installed')"

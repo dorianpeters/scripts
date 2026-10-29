@@ -24,7 +24,7 @@ A cross-platform development setup script that standardizes tool and runtime man
 ### Tools Installed & Configured
 - **JavaScript & Node**:
   - `node@lts`: Modern Node.js runtime.
-  - `upm`: Small and fast Node package manager (aliased to `npm` in shell profiles).
+  - `pnpm`: Fast, disk space efficient package manager.
 - **Python**:
   - `uv`: Fast Python package and tool manager.
   - Latest stable Python installed and managed via `uv python install`.
@@ -32,17 +32,10 @@ A cross-platform development setup script that standardizes tool and runtime man
   - `git`: Installed via system packages and configured with user details and recommended defaults (`init.defaultBranch main`, `color.ui auto`, `pull.rebase false`).
   - `gh` (GitHub CLI): Prompts to run `gh auth login` to authenticate and automatically generate/upload SSH keys to GitHub.
 - **Modern CLI Utilities**:
-  - `zoxide`: Smarter `cd` command.
   - `eza`: Modern, active replacement for `exa` / `ls`.
-  - `fd`: Fast, user-friendly alternative to `find`.
-  - `ripgrep` (`rg`): Extremely fast search alternative to `grep`.
-  - `bat`: Syntax-highlighting `cat` clone with Git integration.
-  - `sd`: Intuitive find & replace CLI (`sed` alternative).
-  - `jq`: Command-line JSON processor.
   - `btop`: Modern terminal resource monitor.
-  - `tealdeer` (`tldr`): Ultra-fast simplified man pages.
-  - `lazygit`: Simple terminal UI for git commands.
-  - `fzf`: Interactive command-line fuzzy finder.
+  - `htop`: Interactive process viewer.
+  - `fastfetch`: Fast, customizable system information tool.
   - `antigravity` (`agy`): Gemini CLI
 
 ### Personal Information & Configuration
