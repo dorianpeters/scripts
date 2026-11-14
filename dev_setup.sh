@@ -71,10 +71,10 @@ if [ "$OS" = "linux" ]; then
   case "$PKG_MANAGER" in
     apt)
       sudo apt update
-      sudo apt install -y curl git unzip build-essential htop
+      sudo apt install -y curl git unzip build-essential htop wl-clipboard xclip
       ;;
     dnf)
-      sudo dnf install -y curl git unzip gcc gcc-c++ make htop
+      sudo dnf install -y curl git unzip gcc gcc-c++ make htop wl-clipboard xclip
       ;;
     *)
       echo "Notice: Non-standard package manager. Ensure curl, git, unzip, and C build tools are installed."

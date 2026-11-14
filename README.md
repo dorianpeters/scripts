@@ -36,6 +36,7 @@ A cross-platform development setup script that standardizes tool and runtime man
   - `btop`: Modern terminal resource monitor.
   - `htop`: Interactive process viewer.
   - `fastfetch`: Fast, customizable system information tool.
+  - `wl-clipboard` & `xclip` (Linux): Clipboard utilities for Wayland and X11 (`gh auth login`, agent clipboard pasting, etc.).
   - `antigravity` (`agy`): Gemini CLI (installed via native installer: `curl -fsSL https://antigravity.google/cli/install.sh | bash`).
 
 ### Personal Information & Configuration
