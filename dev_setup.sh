@@ -168,6 +168,7 @@ echo "--------------------------------------------------"
 TOOLS=(
   node@lts
   pnpm
+  aube
   uv
   gh
   eza
@@ -323,6 +324,7 @@ echo "mise:     $(mise --version 2>/dev/null || echo 'Not installed')"
 echo "Node:     $(node --version 2>/dev/null || echo 'Not installed')"
 echo "npm:      $(npm --version 2>/dev/null || echo 'Not installed')"
 echo "pnpm:     $(pnpm --version 2>/dev/null || echo 'Not installed')"
+echo "aube:     $(aube --version 2>/dev/null || echo 'Not installed')"
 echo "uv:       $(uv --version 2>/dev/null || echo 'Not installed')"
 echo "Python:   $(uv run python --version 2>/dev/null || echo 'Not installed')"
 echo "Git:      $(git --version 2>/dev/null || echo 'Not installed')"

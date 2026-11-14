@@ -25,6 +25,7 @@ A cross-platform development setup script that standardizes tool and runtime man
 - **JavaScript & Node**:
   - `node@lts`: Modern Node.js runtime.
   - `pnpm`: Fast, disk space efficient package manager.
+  - `aube`: Fast Node.js package manager.
 - **Python**:
   - `uv`: Fast Python package and tool manager.
   - Latest stable Python installed and managed via `uv python install`.
