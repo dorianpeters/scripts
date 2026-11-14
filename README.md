@@ -1,8 +1,8 @@
 # Scripts
 
-This repository contains scripts for setting up development environments across Linux distributions and macOS.
+This repository contains scripts for setting up development environments across Linux distributions, macOS, and Windows.
 
-## dev_setup.sh
+## dev_setup.sh (Linux & macOS)
 
 A cross-platform development setup script that standardizes tool and runtime management using [mise](https://mise.jdx.dev/).
 
@@ -59,3 +59,31 @@ Your personal Git information is decoupled from the script and resolved using th
    Uses existing `user.name` and `user.email` from `git config --global` if present.
 4. **Interactive Prompt**:
    If running in an interactive terminal and no details are found, the script prompts for your name and email, with an option to save them to `~/.dev_setup.env`.
+
+---
+
+## win_setup.ps1 (Windows)
+
+A native Windows PowerShell equivalent of `dev_setup.sh` for Windows 10 and Windows 11 using `winget` and [mise](https://mise.jdx.dev/).
+
+### Usage
+Run in PowerShell (5.1 or PowerShell 7+):
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\win_setup.ps1
+```
+
+### What It Sets Up
+- **System Packages via `winget`**:
+  - `Git.Git`: Git for Windows.
+  - `jdx.mise`: `mise` tool and runtime manager, configured in your PowerShell `$PROFILE` (`(&mise activate pwsh) | Out-String | Invoke-Expression`).
+  - `aristocratos.btop4win`: Native Windows port of `btop++` (`btop`).
+- **Developer Tools via `mise`**:
+  - **JavaScript & Node**: `node@lts`, `pnpm`, `aube`.
+  - **Python**: `uv` + latest stable Python (`uv python install`).
+  - **GitHub**: `gh` (with interactive `gh auth login` prompt).
+  - **Modern CLI Utilities**: `eza`, `fastfetch`, and `bottom` (`btm` — cross-platform process/system monitor with `btm --basic` `htop` mode).
+- **AI CLI**:
+  - `antigravity` (`agy`): Installed via the native Windows PowerShell installer (`irm https://antigravity.google/cli/install.ps1 | iex`).
+- **Git Configuration**:
+  - Supports the same `.dev_setup.env` file (`~/.dev_setup.env` or `.dev_setup.env`), `GIT_NAME` / `GIT_EMAIL` environment variables, existing `git config --global`, or interactive prompt.
